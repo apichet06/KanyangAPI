@@ -7,6 +7,11 @@ app.use(cors())
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+
+const provinces = require('./routes/provincesRoutes')
+
+app.use('/api/provincesAll', provinces)
+
 app.get('/', function (req, res) {
     res.send("Welcome to the API , Goods Shop ");
 })

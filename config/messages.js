@@ -10,6 +10,7 @@ class Messages {
 
     static idNotFound = "ไม่พบรหัสที่ระบุครับ!";
     static userNotFound = "ไม่พบข้อมูลผู้ใช้";
+    static notFound = "ไม่พบข้อมูล";
     static repeatEmail = "มีผู้ใช้ Email นี้อยู่แล้ว!";
     static error500 = "Server Error!";
     static error = "Error";
