@@ -1,10 +1,10 @@
-const Provinces = require('../models/provincesModel');
 const Messages = require("../config/messages");
+const ProvincesModels = require('../models/provincesModel');
 
 class ProvincesController {
     static async GetProvinces(req, res) {
         try {
-            const provinces = await Provinces.provincesAll()
+            const provinces = await ProvincesModels.provincesAll()
             if (provinces)
                 res.status(200).json({ status: "ok", data: provinces })
         } catch (error) {

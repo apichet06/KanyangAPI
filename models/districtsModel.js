@@ -1,20 +1,25 @@
-const db = require("../config/db")
+const db = require('../config/db');
 const Messages = require('../config/messages');
 
-class ProvincesModels {
+class DistrctsModel {
 
-    static async provincesAll() {
+    static async DistrictsID(province_id) {
+
         try {
-            const [result] = await db.query('SELECT * FROM provinces');
+            const [result] = await db.query('SELECT * FROM districts where province_id = ?', [province_id]);
             if (result) {
                 return result;
             } else {
                 throw new Error(Messages.notFound)
             }
         } catch (error) {
+
             throw error;
+
         }
+
     }
 
 }
-module.exports = ProvincesModels;
+
+module.exports = DistrctsModel;
