@@ -18,7 +18,7 @@ app.use('/api/subdistrict/', subdistricts)
 
 
 app.get('/', function (req, res) {
-    res.send("Welcome to the API , Goods Shop ");
+    res.send("Welcome to the API , Ganyang system");
 })
 
 const port = process.env.PORT || 3310;
