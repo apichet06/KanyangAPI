@@ -11,11 +11,13 @@ app.use(express.urlencoded({ extended: false }));
 const provinces = require('./routes/provincesRoutes')
 const districts = require('./routes/districtsRoutes')
 const subdistricts = require('./routes/subdistrictsRoutes')
+const rubberprice = require('./routes/rubberpriceRoutes')
+
 
 app.use('/api/provincesAll', provinces)
 app.use('/api/district/', districts)
 app.use('/api/subdistrict/', subdistricts)
-
+app.use('/api/rubberprice/', rubberprice)
 
 app.get('/', function (req, res) {
     res.send("Welcome to the API , Ganyang system");
