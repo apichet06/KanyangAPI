@@ -12,12 +12,15 @@ const provinces = require('./routes/provincesRoutes')
 const districts = require('./routes/districtsRoutes')
 const subdistricts = require('./routes/subdistrictsRoutes')
 const rubberprice = require('./routes/rubberpriceRoutes')
-
+const weightprice = require('./routes/weightRoutes')
+const users = require('./routes/usersRoutes')
 
 app.use('/api/provincesAll', provinces)
 app.use('/api/district/', districts)
 app.use('/api/subdistrict/', subdistricts)
 app.use('/api/rubberprice/', rubberprice)
+app.use('/api/weightprice/', weightprice)
+app.use('/api/users/', users)
 
 app.get('/', function (req, res) {
     res.send("Welcome to the API , Ganyang system");

@@ -9,16 +9,10 @@ class rubber_priceModel {
     static async generaterubber_price() {
         try {
             const [result] = await db.query('SELECT MAX(r_number) as maxId FROM rubber_price');
-            const currentMaxId = result[0].maxId;
+            const currentMaxId = result[0].maxId || 'R10000000'
+            const idNumber = parseInt(currentMaxId.slice(1)) + 1;
+            return `R${idNumber.toString().padStart(7, '0')}`;
 
-            if (currentMaxId) {
-                const idNumber = parseInt(currentMaxId.slice(1)) + 1;
-                console.log(idNumber);
-                const nextId = `R${idNumber.toString().padStart(7, '0')}`;
-                return nextId;
-            } else {
-                return 'R10000001';
-            }
         } catch (error) {
             throw error;
         }
@@ -76,12 +70,26 @@ class rubber_priceModel {
             if (result) {
                 return result;
             } else {
-                throw new Error(Messages.deleteFailed)
+                throw new Error(Messages.notFound)
             }
         } catch (error) {
             throw error;
         }
     }
+
+    static async getById(r_number) {
+        try {
+            const [result] = await db.query('SELECT * FROM rubber_price WHERE r_number = ?', [r_number]);
+            if (result)
+                return result;
+            else
+                throw new Error(Messages.notFound)
+
+        } catch (error) {
+            throw error
+        }
+    }
+
 
 
 }

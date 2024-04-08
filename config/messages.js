@@ -3,6 +3,7 @@ class Messages {
     static insertSuccess = "บันทีกข้อมูลสำเร็จ!";
     static updateSuccess = "อับเดทข้อมูลสำเร็จ!";
     static deleteSuccess = "ลบข้อมูลสำเร็จ!";
+    static ok = "ok";
 
     static deleteFailed = "ลบข้อมูลไม่สำเร็จ!";
     static updateFailed = "แก้ไขข้อมูลไม่สำเร็จ!";
