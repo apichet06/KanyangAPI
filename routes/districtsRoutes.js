@@ -1,10 +1,10 @@
 const express = require('express')
 const districtsController = require('../controllers/districtsController')
 
-const router = express.Router()
+const routes = express.Router()
 
 
-router.get('/:province_id', districtsController.GetDistricts)
+routes.get('/:province_id', districtsController.GetDistricts)
 
 
-module.exports = router
+module.exports = routes

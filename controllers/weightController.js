@@ -49,8 +49,9 @@ class WeightController {
         try {
 
             const data = await WeightModel.getAll()
+            const sanitizedData = data.map(({ u_password, ...rest }) => rest);
             if (data)
-                res.status(200).json({ status: Messages.ok, data: data })
+                res.status(200).json({ status: Messages.ok, data: sanitizedData })
         } catch (error) {
             res.status(500).json({ status: Messages.error500, message: error.message })
         }

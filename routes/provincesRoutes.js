@@ -2,8 +2,8 @@ const express = require('express')
 const ProvincesController = require('../controllers/provincesController')
 
 
-const router = express.Router()
+const routes = express.Router()
 
-router.get('/', ProvincesController.GetProvinces)
+routes.get('/', ProvincesController.GetProvinces)
 
-module.exports = router;
+module.exports = routes;

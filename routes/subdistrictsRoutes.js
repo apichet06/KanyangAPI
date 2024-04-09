@@ -2,8 +2,8 @@ const express = require('express')
 const subdistrictController = require('../controllers/subdistrictsController')
 
 
-const router = express.Router()
+const routes = express.Router()
 
-router.get('/:district_id', subdistrictController.GetSubdistricts)
+routes.get('/:district_id', subdistrictController.GetSubdistricts)
 
-module.exports = router
+module.exports = routes

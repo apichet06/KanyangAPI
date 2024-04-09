@@ -1,5 +1,5 @@
 const db = require('../config/db');
-const Messages = require('../config/messages');
+
 
 class Users {
     static async generageMaxId() {
@@ -17,7 +17,6 @@ class Users {
         try {
             const NextId = await this.generageMaxId()
             userData.u_number = NextId
-            userData.u_password = 123456
             const [sql] = await db.query('INSERT INTO users SET ?', [userData])
             const [result] = await db.query('SELECT * FROM users WHERE id = ?', sql.insertId)
             if (result)
@@ -30,13 +29,11 @@ class Users {
     }
     static async update(userData, u_number) {
         try {
-            const NextId = await this.generageMaxId()
-            userData.u_number = NextId
 
-            const [sql] = await db.query('INSERT INTO users SET ?', [userData])
+            const [sql] = await db.query('UPDATE users SET ? WHERE u_number=?', [userData, u_number])
             const [result] = await db.query('SELECT * FROM users WHERE u_number = ?', u_number)
             if (sql)
-                return result
+                return result || null
         } catch (error) {
             throw error
         }
@@ -54,7 +51,14 @@ class Users {
     }
     static async getAll() {
         try {
-            const [result] = await db.query("SELECT * FROM users")
+            const [result] = await db.query(`
+            SELECT * FROM Users a
+            inner join provinces b
+            on a.provinces_id = b.id 
+            inner join districts c
+            on c.id = a.districts_id
+            inner join subdistricts d 
+            on d.id = a.subdistricts_id`)
             return result
         } catch (error) {
             throw error
@@ -63,13 +67,30 @@ class Users {
     }
     static async getById(u_number) {
         try {
-            const [result] = await db.query("SELECT * FROM users Where u_number = ? ", u_number)
-            return result
+            const [result] = await db.query(`
+            SELECT * FROM Users a
+            inner join provinces b
+            on a.provinces_id = b.id 
+            inner join districts c
+            on c.id = a.districts_id
+            inner join subdistricts d 
+            on d.id = a.subdistricts_id  Where u_number = ? `, [u_number])
+            if (result)
+                return result || null
         } catch (error) {
             throw error
         }
 
     }
+    static async getDuplicateUsers(u_firstname, u_lastname) {
+        try {
+            const [result] = await db.query("SELECT * FROM users Where u_firstname =? and u_lastname = ? ", [u_firstname, u_lastname])
+            return result.length > 0
+        } catch (error) {
+            throw error
+        }
+    }
+
 }
 
 module.exports = Users;
