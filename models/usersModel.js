@@ -39,6 +39,18 @@ class Users {
         }
 
     }
+    static async updatePassword(userData, u_number) {
+        try {
+            const [sql] = await db.query('UPDATE users SET ? WHERE u_number=?', [userData, u_number])
+            const [result] = await db.query('SELECT * FROM users WHERE u_number = ?', u_number)
+            if (sql)
+                return result || null
+        } catch (error) {
+            throw error
+        }
+    }
+
+
     static async delete(u_number) {
         try {
             const [result] = await db.query('DELETE FROM users WHERE u_number = ?', u_number)

@@ -6,8 +6,8 @@ class WeightController {
 
     static async CreateWeightprice(req, res) {
         try {
-            const { w_weigth, u_number, r_number } = req.body
-            const weigthData = { w_weigth, u_number, r_number }
+            const { w_weigth, u_number, r_number, w_admin } = req.body
+            const weigthData = { w_weigth, u_number, r_number, w_admin }
 
             const data = await WeightModel.create(weigthData)
 
@@ -23,8 +23,8 @@ class WeightController {
         try {
             const { w_number } = req.params
 
-            const { w_weigth, r_number, w_price, u_number } = req.body
-            const weigthData = { w_weigth, r_number, w_price, u_number }
+            const { w_weigth, r_number, w_price, u_number, w_admin } = req.body
+            const weigthData = { w_weigth, r_number, w_price, u_number, w_admin }
             const data = await WeightModel.update(weigthData, w_number)
             if (data)
                 res.status(200).json({ status: Messages.ok, data: data })
@@ -66,6 +66,8 @@ class WeightController {
             res.status(500).json({ status: Messages.error500, message: error.message })
         }
     }
+
+
 }
 
 module.exports = WeightController

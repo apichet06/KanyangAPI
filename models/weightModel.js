@@ -87,7 +87,6 @@ class WeightModel {
     }
 
 
-
 }
 
 module.exports = WeightModel

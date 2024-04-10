@@ -56,6 +56,16 @@ class SharepercentController {
             res.status(500).json({ status: Messages.error500, message: error.message })
         }
     }
+
+    static async GetShareAll(req, res) {
+        try {
+            const data = await sharepercentModel.getShareAll()
+            if (data)
+                res.status(200).json({ status: Messages.ok, data: data })
+        } catch (error) {
+            res.status(500).json({ status: Messages.error500, message: error.message })
+        }
+    }
 }
 
 module.exports = SharepercentController

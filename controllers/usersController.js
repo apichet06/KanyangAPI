@@ -31,28 +31,48 @@ class Users {
     static async UpdateUsers(req, res) {
         try {
             const { u_number } = req.params
-            const { u_title, u_firstname, u_lastname, u_address, u_passwordold, u_password, provinces_id, districts_id, subdistricts_id, u_share, u_status } = req.body
-            const usersData = { u_title, u_firstname, u_lastname, u_address, u_password, provinces_id, districts_id, subdistricts_id, u_share, u_status }
-            const [checkUsers] = await usersModel.getById(u_number)
+            const { u_title, u_firstname, u_lastname, u_address, provinces_id, districts_id, subdistricts_id, u_share, u_status } = req.body
+            const usersData = { u_title, u_firstname, u_lastname, u_address, provinces_id, districts_id, subdistricts_id, u_share, u_status }
 
-            const passwordMatch = await bcrypt.compare(u_passwordold, checkUsers.u_password)
+            const users = await usersModel.update(usersData, u_number)
+            delete users[0].u_password
+            if (users)
+                res.status(200).json({ status: Messages.ok, messages: Messages.updateSuccess, data: users })
+            else
+                res.status(400).json({ status: Messages.error, message: Messages.updateFailed })
 
-            if (!passwordMatch) {
-                return res.status(400).json({ error: Messages.PasswordNotmatch });
-            } else {
-
-                const users = await usersModel.update(usersData, u_number)
-                delete users[0].u_password
-                if (users)
-                    res.status(200).json({ status: Messages.ok, messages: Messages.updateSuccess, data: users })
-                else
-                    res.status(400).json({ status: Messages.error, message: Messages.updateFailed })
-            }
 
         } catch (error) {
             res.status(500).json({ status: Messages.error500, message: error.message })
         }
     }
+
+
+    static async changPaassword(req, res) {
+        try {
+            const { u_number } = req.params
+            const { u_password, u_passwordold, } = req.body
+            const hashedPassword = await bcrypt.hash(u_password, 10);
+            const usersData = { u_password: hashedPassword }
+            const [checkUsers] = await usersModel.getById(u_number)
+            const passwordMatch = await bcrypt.compare(u_passwordold, checkUsers.u_password)
+
+            if (!passwordMatch) {
+                return res.status(400).json({ error: Messages.PasswordNotmatch });
+            } else {
+                const users = await usersModel.updatePassword(usersData, u_number)
+                delete users[0].u_password
+                if (users)
+                    res.status(200).json({ status: Messages.ok, messages: Messages.insertSuccess, data: users })
+                else
+                    res.status(400).json({ status: Messages.error, message: Messages.updateFailed })
+            }
+        } catch (error) {
+            res.status(500).json({ status: Messages.error500, message: error.message })
+        }
+
+    }
+
 
 
     static async DeleteUsers(req, res) {
