@@ -5,6 +5,7 @@ const routes = express.Router()
 
 routes.get('/', weightController.GetWeightpriceAll)
 routes.get('/:w_number', weightController.GetWeightpriceById)
+routes.get('/users/:u_number', weightController.GetWeightUserById)
 routes.post('/', weightController.CreateWeightprice)
 routes.put('/:w_number', weightController.UpdateWeightprice)
 routes.delete('/:w_number', weightController.DeleteWeightprice)

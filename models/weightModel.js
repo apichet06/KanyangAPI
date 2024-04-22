@@ -59,7 +59,9 @@ class WeightModel {
     static async getAll() {
         try {
             const [result] = await db.query(`
-            SELECT * FROM kanyangDB.weight_price a
+            SELECT w_number,f.r_number,r_around,r_rubber_price,w_weigth,w_price,a.u_number,CONCAT(b.u_title,b.u_firstname,' ',b.u_lastname)as username,b.u_address,c.name_in_thai,d.name_in_thai,
+            d.name_in_thai,e.name_in_thai,zip_code,CONCAT(g.u_title,g.u_firstname,' ',g.u_lastname)as uadmin,w_datetime,r_rubber_date
+            FROM kanyangDB.weight_price a
             inner join kanyangDB.Users b
             on a.u_number = b.u_number
             inner join kanyangDB.provinces c 
@@ -67,7 +69,12 @@ class WeightModel {
             inner join kanyangDB.districts d 
             on d.id = b.districts_id
             inner join kanyangDB.subdistricts e 
-            on e.id = b.subdistricts_id`)
+            on e.id = b.subdistricts_id
+            inner join kanyangDB.rubber_price f 
+            on f.r_number = a.r_number
+            inner join kanyangDB.Users g
+            on g.u_number = a.w_admin
+            order by a.w_number desc`)
             return result
         } catch (error) {
             throw error
@@ -86,6 +93,35 @@ class WeightModel {
         }
     }
 
+    static async getUserById(u_number) {
+
+        try {
+            const [result] = await db.query(`SELECT w_number,f.r_number,r_around,r_rubber_price,w_weigth,w_price,a.u_number,CONCAT(b.u_title,b.u_firstname,' ',b.u_lastname)as username,b.u_address,c.name_in_thai,d.name_in_thai,
+                        d.name_in_thai,e.name_in_thai,zip_code,CONCAT(g.u_title,g.u_firstname,' ',g.u_lastname)as uadmin,w_datetime,r_rubber_date
+                        FROM kanyangDB.weight_price a
+                        inner join kanyangDB.Users b
+                        on a.u_number = b.u_number
+                        inner join kanyangDB.provinces c 
+                        on c.id = b.provinces_id
+                        inner join kanyangDB.districts d 
+                        on d.id = b.districts_id
+                        inner join kanyangDB.subdistricts e 
+                        on e.id = b.subdistricts_id
+                        inner join kanyangDB.rubber_price f 
+                        on f.r_number = a.r_number
+                        inner join kanyangDB.Users g
+                        on g.u_number = a.w_admin
+                        where b.u_number = ?
+                        order by a.w_number desc`, [u_number])
+
+            if (result)
+                return result
+            else
+                throw new Error(Messages.notFound)
+        } catch (error) {
+            throw error
+        }
+    }
 
 }
 

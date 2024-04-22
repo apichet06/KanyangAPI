@@ -67,6 +67,17 @@ class WeightController {
         }
     }
 
+    static async GetWeightUserById(req, res) {
+        try {
+            const { u_number } = req.params
+
+            const data = await WeightModel.getUserById(u_number)
+            if (data)
+                res.status(200).json({ status: Messages.ok, data: data })
+        } catch (error) {
+            res.status(500).json({ status: Messages.error500, message: error.message })
+        }
+    }
 
 }
 
