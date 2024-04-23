@@ -23,10 +23,11 @@ class rubber_priceModel {
 
             const currentYear = new Date().getFullYear();
             const currentMonth = new Date().getMonth() + 1;
-
+            console.log(currentMonth);
             const [result] = await db.query('SELECT MAX(r_around) as maxId FROM rubber_price WHERE YEAR(r_rubber_date) = ? AND MONTH(r_rubber_date) = ?', [currentYear, currentMonth])
             const currentMaxId = result[0].maxId || '0'
-            const MaxIdNumber = parseInt(currentMaxId.slice(1)) + 1;
+            const MaxIdNumber = parseInt(currentMaxId.slice(0)) + 1;
+
             return MaxIdNumber;
         } catch (error) {
             throw error;
@@ -37,6 +38,7 @@ class rubber_priceModel {
         try {
             const nextId = await this.generaterubber_price();
             const around = await this.generaterubber_around();
+
             rubberData.r_number = nextId;
             rubberData.r_around = around;
 
