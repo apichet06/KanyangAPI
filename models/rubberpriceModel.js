@@ -56,7 +56,6 @@ class rubber_priceModel {
         try {
 
             const [result] = await db.query("UPDATE rubber_price SET ? Where r_number = ? ", [rubberData, r_number]);
-
             const [rubber] = await db.query('SELECT * FROM rubber_price WHERE r_number = ?', r_number);
 
             if (result)
@@ -84,7 +83,9 @@ class rubber_priceModel {
     static async GetrubberpriceAll() {
 
         try {
-            const [result] = await db.query('SELECT * FROM rubber_price order by r_number desc');
+            const [result] = await db.query(`SELECT CONCAT(b.u_title,b.u_firstname,' ',b.u_lastname)as username,a.* 
+              FROM kanyangDB.rubber_price a 
+              inner join kanyangDB.users b on a.u_number = b.u_number order by r_rubber_date desc`);
             if (result) {
                 return result;
             } else {

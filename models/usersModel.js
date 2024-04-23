@@ -64,12 +64,14 @@ class Users {
     static async getAll() {
         try {
             const [result] = await db.query(`
-            SELECT * FROM Users a
-            inner join provinces b
+            SELECT *,CONCAT(a.u_title,a.u_firstname,' ',a.u_lastname)as username,
+            CONCAT(a.u_address ,' ต.',d.name_in_thai,' อ.',c.name_in_thai,' จ.',b.name_in_thai, ' ', d.zip_code) AS u_address 
+            FROM kanyangDB.Users a
+            inner join kanyangDB.provinces b
             on a.provinces_id = b.id 
-            inner join districts c
+            inner join kanyangDB.districts c
             on c.id = a.districts_id
-            inner join subdistricts d 
+            inner join kanyangDB.subdistricts d 
             on d.id = a.subdistricts_id`)
             return result
         } catch (error) {
