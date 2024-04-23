@@ -6,9 +6,9 @@ class rubberController {
 
     static async CreateRubberPrice(req, res) {
         try {
-            const { r_around, r_rubber_price, r_rubber_date, u_number, r_admin } = req.body
+            const { r_around, r_rubber_price, r_rubber_date, u_number } = req.body
             const rubberData = {
-                r_around, r_rubber_price, r_rubber_date, u_number, r_admin
+                r_around, r_rubber_price, r_rubber_date, u_number
             }
 
             const rubber_Price = await rubberMudel.create(rubberData)
@@ -22,9 +22,9 @@ class rubberController {
     static async updateRubberPrice(req, res) {
         try {
             const { r_number } = req.params;
-            const { r_around, r_rubber_price, r_rubber_date, r_admin } = req.body
+            const { r_around, r_rubber_price, r_rubber_date } = req.body
             const rubberData = {
-                r_around, r_rubber_price, r_rubber_date, r_admin
+                r_around, r_rubber_price, r_rubber_date
             }
 
             const rubber_Price = await rubberMudel.update(rubberData, r_number)
