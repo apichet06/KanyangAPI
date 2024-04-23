@@ -21,8 +21,8 @@ class rubber_priceModel {
     static async generaterubber_around() {
         try {
 
-            const currentYear = currentDate.getFullYear();
-            const currentMonth = currentDate.getMonth() + 1;
+            const currentYear = new Date().getFullYear();
+            const currentMonth = new Date().getMonth() + 1;
 
             const [result] = await db.query('SELECT MAX(r_around) as maxId FROM rubber_price WHERE YEAR(r_rubber_date) = ? AND MONTH(r_rubber_date) = ?', [currentYear, currentMonth])
             const currentMaxId = result[0].maxId || '0'
