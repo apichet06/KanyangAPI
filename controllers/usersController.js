@@ -5,10 +5,10 @@ const jwt = require('jsonwebtoken');
 class Users {
     static async CreateUsers(req, res) {
         try {
-            const { u_title, u_firstname, u_lastname, u_address, provinces_id, districts_id, subdistricts_id, u_share, u_status } = req.body
+            const { u_title, u_firstname, u_lastname, u_address, provinces_id, districts_id, subdistricts_id, u_share, u_status, u_admin } = req.body
             const hashedPassword = await bcrypt.hash('123456', 10);
 
-            const usersData = { u_title, u_firstname, u_lastname, u_password: hashedPassword, u_address, provinces_id, districts_id, subdistricts_id, u_share, u_status }
+            const usersData = { u_title, u_firstname, u_lastname, u_password: hashedPassword, u_address, provinces_id, districts_id, subdistricts_id, u_share, u_status, u_admin }
 
             const UserDuplicate = await usersModel.getDuplicateUsers(u_firstname, u_lastname)
 
@@ -31,8 +31,8 @@ class Users {
     static async UpdateUsers(req, res) {
         try {
             const { u_number } = req.params
-            const { u_title, u_firstname, u_lastname, u_address, provinces_id, districts_id, subdistricts_id, u_share, u_status } = req.body
-            const usersData = { u_title, u_firstname, u_lastname, u_address, provinces_id, districts_id, subdistricts_id, u_share, u_status }
+            const { u_title, u_firstname, u_lastname, u_address, provinces_id, districts_id, subdistricts_id, u_share, u_status, u_admin } = req.body
+            const usersData = { u_title, u_firstname, u_lastname, u_address, provinces_id, districts_id, subdistricts_id, u_share, u_status, u_admin }
 
             const users = await usersModel.update(usersData, u_number)
             delete users[0].u_password
@@ -83,7 +83,7 @@ class Users {
             } else {
                 const data = await usersModel.delete(u_number)
                 if (data)
-                    res.status(200).json({ status: Messages.ok, data: data })
+                    res.status(200).json({ status: Messages.ok, data: data, message: Messages.deleteSuccess })
                 else
                     res.status(400).json({ status: Messages.deleteFailed, message: error.message })
             }
