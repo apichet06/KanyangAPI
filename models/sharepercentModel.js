@@ -3,6 +3,7 @@ const db = require('../config/db')
 class sharepercentModel {
     static async create(sharepercentData) {
         try {
+
             const [result] = await db.query("INSERT INTO share_percent SET ?", [sharepercentData])
             return result || null
         } catch (error) {
@@ -33,6 +34,18 @@ class sharepercentModel {
             throw error
         }
     }
+
+    static async GetByYear(year) {
+
+        try {
+            const [result] = await db.query("SELECT * FROM share_percent  Where s_year = ? ", [year])
+            return result || null
+        } catch (error) {
+            throw error
+        }
+    }
+
+
     static async getShareAll() {
         try {
             const [result] = await db.query(
@@ -45,10 +58,10 @@ class sharepercentModel {
                     Max(( SELECT s_percent FROM kanyangDB.share_percent WHERE s_year = 2024)) AS percent,
                     ROUND(Max(((SELECT s_percent FROM kanyangDB.share_percent WHERE s_year = 2024) * a.u_share)/100),2) AS shareCount,
                     COALESCE(SUM(b.w_weigth),0) AS weightSum,
-                    Max(( SELECT s_money FROM kanyangDB.share_percent WHERE s_year = 2024)) AS percent_yang,
-                    ROUND(COALESCE(SUM((SELECT SUM(s_money/1000) FROM kanyangDB.share_percent WHERE s_year = 2024) * b.w_weigth), 0),2) AS weightPriceSum,
+                    Max(( SELECT s_huatun FROM kanyangDB.share_percent WHERE s_year = 2024)) AS percent_yang,
+                    ROUND(COALESCE(SUM((SELECT SUM(s_huatun/1000) FROM kanyangDB.share_percent WHERE s_year = 2024) * b.w_weigth), 0),2) AS weightPriceSum,
                     ROUND(COALESCE(Max(((SELECT s_percent FROM kanyangDB.share_percent WHERE s_year = 2024) * a.u_share)/100),0) +
-                    COALESCE(SUM((SELECT SUM(s_money/1000) FROM kanyangDB.share_percent WHERE s_year = 2024) * b.w_weigth), 0),2)
+                    COALESCE(SUM((SELECT SUM(s_huatun/1000) FROM kanyangDB.share_percent WHERE s_year = 2024) * b.w_weigth), 0),2)
                 AS sumPrice
                 FROM kanyangDB.Users a 
                 LEFT JOIN kanyangDB.weight_price b

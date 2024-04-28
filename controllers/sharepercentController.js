@@ -5,9 +5,15 @@ const Messages = require('../config/messages')
 class SharepercentController {
     static async CreateSharepercent(req, res) {
         try {
-            const { s_year, s_percent } = req.body
-            const sharepercentData = { s_year, s_percent }
-            console.log(sharepercentData);
+            const { s_year, s_percent, s_huatun } = req.body
+            const sharepercentData = { s_year, s_percent, s_huatun }
+
+
+            const [year] = await sharepercentModel.GetByYear(s_year)
+
+            if (year)
+                return res.status(400).json({ status: Messages.error, message: Messages.exists + s_year })
+
             const Data = await sharepercentModel.create(sharepercentData)
 
             if (Data)
@@ -21,8 +27,8 @@ class SharepercentController {
     static async UpdateSharepercent(req, res) {
         try {
             const { id } = req.params
-            const { s_year, s_percent } = req.body
-            const sharepercentData = { s_year, s_percent }
+            const { s_year, s_percent, s_huatun } = req.body
+            const sharepercentData = { s_year, s_percent, s_huatun }
             const Data = await sharepercentModel.update(sharepercentData, id)
 
             if (!Data)

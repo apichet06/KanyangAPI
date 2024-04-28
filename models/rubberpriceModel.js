@@ -18,13 +18,14 @@ class rubber_priceModel {
         }
     }
 
-    static async generaterubber_around() {
+    static async generaterubber_around(date) {
         try {
 
-            const currentYear = new Date().getFullYear();
-            const currentMonth = new Date().getMonth() + 1;
-            console.log(currentMonth);
-            const [result] = await db.query('SELECT MAX(r_around) as maxId FROM rubber_price WHERE YEAR(r_rubber_date) = ? AND MONTH(r_rubber_date) = ?', [currentYear, currentMonth])
+            const parts = date.split('-');
+            const year = parts[0]; // ส่วนแรกคือปี
+            const month = parts[1];
+
+            const [result] = await db.query('SELECT MAX(r_around) as maxId FROM rubber_price WHERE YEAR(r_rubber_date) = ? AND MONTH(r_rubber_date) = ?', [year, month])
             const currentMaxId = result[0].maxId || '0'
             const MaxIdNumber = parseInt(currentMaxId.slice(0)) + 1;
 
@@ -36,8 +37,10 @@ class rubber_priceModel {
 
     static async create(rubberData) {
         try {
+
+
             const nextId = await this.generaterubber_price();
-            const around = await this.generaterubber_around();
+            const around = await this.generaterubber_around(rubberData.r_rubber_date);
 
             rubberData.r_number = nextId;
             rubberData.r_around = around;

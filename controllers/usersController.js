@@ -13,12 +13,12 @@ class Users {
             const UserDuplicate = await usersModel.getDuplicateUsers(u_firstname, u_lastname)
 
             if (UserDuplicate) {
-                res.status(400).json({ status: Messages.error, messages: Messages.exists + u_firstname + ' ' + u_lastname })
+                res.status(400).json({ status: Messages.error, message: Messages.exists + u_firstname + ' ' + u_lastname })
             } else {
                 const users = await usersModel.create(usersData)
                 delete users[0].u_password
                 if (users)
-                    res.status(200).json({ status: Messages.ok, messages: Messages.insertSuccess, data: users })
+                    res.status(200).json({ status: Messages.ok, message: Messages.insertSuccess, data: users })
                 else
                     res.status(400).json({ status: Messages.error, message: Messages.updateFailed })
             }
@@ -37,7 +37,7 @@ class Users {
             const users = await usersModel.update(usersData, u_number)
             delete users[0].u_password
             if (users)
-                res.status(200).json({ status: Messages.ok, messages: Messages.updateSuccess, data: users })
+                res.status(200).json({ status: Messages.ok, message: Messages.updateSuccess, data: users })
             else
                 res.status(400).json({ status: Messages.error, message: Messages.updateFailed })
 
@@ -63,7 +63,7 @@ class Users {
                 const users = await usersModel.updatePassword(usersData, u_number)
                 delete users[0].u_password
                 if (users)
-                    res.status(200).json({ status: Messages.ok, messages: Messages.insertSuccess, data: users })
+                    res.status(200).json({ status: Messages.ok, message: Messages.insertSuccess, data: users })
                 else
                     res.status(400).json({ status: Messages.error, message: Messages.updateFailed })
             }
