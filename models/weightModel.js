@@ -4,38 +4,61 @@ const Messages = require('../config/messages')
 class WeightModel {
 
     static async generateMaxId() {
+
         try {
             const currentDate = new Date();
-            const [sql] = await db.query('SELECT max(w_number) as maxId FROM weight_price');
-            // const maxId = sql[0].maxId || `W${currentDate.getFullYear()}${String(currentDate.getMonth() + 1).padStart(2, '0')}000`;
-            const maxId = sql[0].maxId || `W${currentDate.getFullYear()}${(currentDate.getMonth() + 1).toString().padStart(2, '0')}000`;
+            const [result] = await db.query('SELECT max(w_number) as MaxId FROM weight_price')
+            const currentMaxId = result[0].MaxId || `W${currentDate.getFullYear()}${(currentDate.getMonth() + 1).toString().padStart(2, '0')}000`;
 
-            return `W${maxId.slice(1, 9)}${parseInt(maxId.slice(9)) + 1}`.padEnd(10, '0');
-        } catch (error) {
-            throw error;
-        }
-    }
-
-    static async create(weightData) {
-
-        try {
-            const nextId = await this.generateMaxId()
-            weightData.w_number = nextId;
-            const [rubber] = await db.query(`SELECT r_rubber_price FROM rubber_price Where r_number = ?`, weightData.r_number)
-            // console.log(rubber[0].r_rubber_price * weightData.w_weigth);
-            weightData.w_price = rubber[0].r_rubber_price * weightData.w_weigth
-            const [sql] = await db.query('INSERT INTO weight_price SET ? ', [weightData])
-            const [weightprice] = await db.query('SELECT * FROM weight_price WHERE id = ? ', sql.insertId)
-
-            return weightprice
+            const idNumber = parseInt(currentMaxId.slice(1)) + 1
+            return "W" + idNumber.toString().padStart(3, '0')
         } catch (error) {
             throw error
         }
 
     }
 
+    static async create(weightData) {
+        try {
+            const nextId = await this.generateMaxId()
+
+            weightData.w_number = nextId;
+            const [rubber] = await db.query(`SELECT r_rubber_price FROM rubber_price WHERE r_number = ?`, weightData.r_number)
+            weightData.w_price = rubber[0].r_rubber_price * weightData.w_weigth
+
+
+            const [checkreplace] = await db.query(`
+            SELECT COUNT(a.id) AS count, max(concat(b.u_title, b.u_firstname, ' ', b.u_lastname)) AS user_fullname,c.r_around,r_rubber_date
+                FROM kanyangDB.weight_price a 
+                INNER JOIN kanyangDB.Users b ON a.u_number = b.u_number
+                INNER JOIN kanyangDB.rubber_price c ON a.r_number = c.r_number  
+                WHERE a.r_number = ? AND a.u_number = ?
+                GROUP BY b.u_title, b.u_firstname , b.u_lastname,c.r_around,c.r_rubber_date
+            `, [weightData.r_number, weightData.u_number]);
+            ;
+            if (checkreplace && checkreplace.length > 0) {
+
+                return checkreplace[0]
+
+            } else {
+
+                // ไม่มีค่าซ้ำ
+                const [sql] = await db.query('INSERT INTO weight_price SET ?', [weightData])
+                const [weightprice] = await db.query('SELECT * FROM weight_price WHERE id = ?', sql.insertId)
+                return weightprice;
+            }
+        } catch (error) {
+            throw error;
+        }
+    }
+
+
     static async update(weightData, w_number) {
         try {
+            const [rubber] = await db.query(`SELECT r_rubber_price FROM rubber_price Where r_number = ?`, weightData.r_number)
+
+            weightData.w_price = rubber[0].r_rubber_price * weightData.w_weigth
+
             const [result] = await db.query("UPDATE weight_price SET ? Where w_number = ? ", [weightData, w_number])
             const [weightprice] = await db.query('SELECT * FROM weight_price WHERE w_number = ?', w_number)
 

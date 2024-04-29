@@ -10,4 +10,5 @@ routes.put('/:r_number', rubberController.updateRubberPrice)
 routes.delete('/:r_number', rubberController.DeleteRubberPrice)
 routes.get('/', rubberController.ShowRubberPriceAll)
 routes.get('/:r_number', rubberController.ShowRubberPriceById)
+
 module.exports = routes 
