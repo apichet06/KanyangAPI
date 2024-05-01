@@ -129,7 +129,7 @@ class Users {
             if (!passwordMatch) {
                 return res.status(401).json({ error: Messages.invalidPassword });
             }
-            const token = jwt.sign({ userId: user.u_number }, process.env.JWT_SECRET, { expiresIn: '24h' });
+            const token = jwt.sign({ userId: user.u_number, username: user.u_title + user.u_firstname + ' ' + user.u_lastname, status: user.u_status }, process.env.JWT_SECRET, { expiresIn: '24h' });
             delete user.u_password
             // Return the token
             res.json({ status: Messages.ok, token, user });
