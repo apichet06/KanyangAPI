@@ -13,10 +13,27 @@ class Users {
         }
 
     }
+
+    static async generageShareId() {
+        try {
+            const [result] = await db.query('SELECT MAX(u_share_id) as ShareId FROM users')
+            const currentMaxId = result[0].ShareId || "0"
+            const idNumber = parseInt(currentMaxId) + 1
+            return idNumber
+        } catch (error) {
+            throw error
+        }
+    }
+
+
     static async create(userData) {
         try {
             const NextId = await this.generageMaxId()
+            const ShareId = await this.generageShareId()
+
             userData.u_number = NextId
+            userData.ShareId = ShareId
+
             const [sql] = await db.query('INSERT INTO users SET ?', [userData])
             const [result] = await db.query('SELECT * FROM users WHERE id = ?', sql.insertId)
             if (result)
@@ -27,6 +44,7 @@ class Users {
         }
 
     }
+
     static async update(userData, u_number) {
         try {
 
@@ -39,6 +57,7 @@ class Users {
         }
 
     }
+
     static async updatePassword(userData, u_number) {
         try {
             const [sql] = await db.query('UPDATE users SET ? WHERE u_number=?', [userData, u_number])
