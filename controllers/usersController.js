@@ -119,7 +119,7 @@ class Users {
         try {
             const { u_number, u_password } = req.body
 
-            const [user] = await usersModel.getById(u_number);
+            const [user] = await usersModel.getById(u_number.toUpperCase());
 
             if (!user) {
                 return res.status(400).json({ error: Messages.userNotFound });
