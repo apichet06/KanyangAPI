@@ -63,9 +63,12 @@ class SharepercentController {
         }
     }
 
-    static async GetShareAll(req, res) {
+    static async SearchShare(req, res) {
         try {
-            const data = await sharepercentModel.getShareAll()
+            const { year, u_username } = req.body
+            const searchData = { year, u_username }
+
+            const data = await sharepercentModel.PostShare(searchData)
             if (data)
                 res.status(200).json({ status: Messages.ok, data: data })
         } catch (error) {

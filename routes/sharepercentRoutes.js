@@ -8,5 +8,5 @@ routes.post('/', sharepercentController.CreateSharepercent)
 routes.put('/:id', sharepercentController.UpdateSharepercent)
 routes.delete('/:id', sharepercentController.DeleteSharepercent)
 routes.get('/', sharepercentController.GetSharepercent)
-routes.get('/share/', sharepercentController.GetShareAll)
+routes.post('/share/', sharepercentController.SearchShare)
 module.exports = routes
