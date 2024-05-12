@@ -48,8 +48,11 @@ class WeightController {
     }
     static async GetWeightpriceAll(req, res) {
         try {
+            const { r_number, u_firstname } = req.body
+            const Data = { r_number, u_firstname }
 
-            const data = await WeightModel.getAll()
+
+            const data = await WeightModel.getAll(Data)
             const sanitizedData = data.map(({ u_password, ...rest }) => rest);
             if (data)
                 res.status(200).json({ status: Messages.ok, data: sanitizedData })

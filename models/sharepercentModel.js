@@ -51,8 +51,6 @@ class sharepercentModel {
     }
 
 
-
-
     static async PostShare(Data) {
         try {
 
@@ -71,8 +69,9 @@ class sharepercentModel {
                 MAX(CASE
                 WHEN CONCAT(YEAR(CURRENT_DATE()), '-', LPAD(MONTH(CURRENT_DATE()), 2, '0')) >= CONCAT(YEAR(CURRENT_DATE()), '-02') THEN YEAR(c.r_rubber_date)
                 ELSE YEAR(c.r_rubber_date) - 1
-                END) AS r_rubber_year, 
-                a.u_number,
+                END) AS r_rubber_year,
+                Max(u_share_id) AS u_share_id, 
+                a.u_number, 
                 MAX(a.u_title) AS u_title,
                 MAX(a.u_firstname) AS u_firstname,
                 MAX(a.u_lastname) AS u_lastname,
@@ -91,7 +90,7 @@ class sharepercentModel {
             INNER JOIN kanyangDB.provinces e 	ON e.id = a.provinces_id
             INNER JOIN kanyangDB.districts f    ON f.id = a.districts_id
             INNER JOIN kanyangDB.subdistricts g ON g.id = a.subdistricts_id
-            WHERE c.r_rubber_date >= ? AND c.r_rubber_date <= ? and a.u_firstname like ?
+            WHERE c.r_rubber_date >= ? AND c.r_rubber_date <= ? AND a.u_firstname like ?
             GROUP BY a.u_number
             order by a.u_number asc`, [yearStart, yearEnd, '%' + Data.u_username + '%'])
 

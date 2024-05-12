@@ -40,8 +40,12 @@ class rubberController {
         try {
             const { r_number } = req.params;
 
-            await rubberMudel.delete(r_number)
-            res.status(200).json({ status: Messages.ok, message: Messages.deleteSuccess })
+            const data = await rubberMudel.delete(r_number)
+
+            if (data.rowCount > 0)
+                res.status(400).json({ status: Messages.ok, message: Messages.used })
+            else
+                res.status(200).json({ status: Messages.ok, message: Messages.deleteSuccess })
 
         } catch (error) {
             res.status(500).json({ status: Messages.error500, message: error.message })

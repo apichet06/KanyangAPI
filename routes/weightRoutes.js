@@ -3,7 +3,7 @@ const express = require('express')
 const routes = express.Router()
 
 
-routes.get('/', weightController.GetWeightpriceAll)
+routes.post('/weight', weightController.GetWeightpriceAll)
 routes.get('/:w_number', weightController.GetWeightpriceById)
 routes.get('/users/:u_number', weightController.GetWeightUserById)
 routes.post('/', weightController.CreateWeightprice)

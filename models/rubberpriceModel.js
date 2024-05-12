@@ -73,16 +73,20 @@ class rubber_priceModel {
     }
 
     static async delete(r_number) {
-
         try {
-            const [result] = await db.query('DELETE FROM rubber_price WHERE  r_number = ?', [r_number])
-            // console.log(result.affectedRows); 
+            const [checkrerepeat] = await db.query("SELECT count(*) AS rowCount FROM weight_price WHERE r_number = ?", [r_number]);
+            if (checkrerepeat[0].rowCount > 0) {
+                return checkrerepeat[0];
+            }
+
+            const [result] = await db.query('DELETE FROM rubber_price WHERE  r_number = ?', [r_number]);
             return result.affectedRows;
         } catch (error) {
             throw error;
         }
-
     }
+
+
     static async GetrubberpriceAll() {
 
         try {

@@ -14,6 +14,7 @@ class Messages {
     static userNotFound = "ไม่พบข้อมูลผู้ใช้";
     static notFound = "ไม่พบข้อมูล";
     static repeatEmail = "Email นี้มีอยู่แล้ว!";
+    static used = "ไม่สามารถลบได้,ข้อมูลนี้ใช้งานอยู่"
     static error500 = "Server Error!";
     static error = "Error";
     static invalidPassword = "รหัสผ่านไม่ถูกต้อง!";

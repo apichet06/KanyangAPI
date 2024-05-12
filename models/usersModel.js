@@ -16,7 +16,7 @@ class Users {
 
     static async generageShareId() {
         try {
-            const [result] = await db.query('SELECT MAX(u_share_id) as ShareId FROM users')
+            const [result] = await db.query('SELECT u_share_id AS ShareId FROM users ORDER BY id DESC LIMIT 1')
             const currentMaxId = result[0].ShareId || "0"
             const idNumber = parseInt(currentMaxId) + 1
             return idNumber
@@ -32,7 +32,7 @@ class Users {
             const ShareId = await this.generageShareId()
 
             userData.u_number = NextId
-            userData.ShareId = ShareId
+            userData.u_share_id = ShareId
 
             const [sql] = await db.query('INSERT INTO users SET ?', [userData])
             const [result] = await db.query('SELECT * FROM users WHERE id = ?', sql.insertId)
@@ -91,7 +91,7 @@ class Users {
             inner join kanyangDB.districts c
             on c.id = a.districts_id
             inner join kanyangDB.subdistricts d 
-            on d.id = a.subdistricts_id`)
+            on d.id = a.subdistricts_id order by a.id asc`)
             return result
         } catch (error) {
             throw error
