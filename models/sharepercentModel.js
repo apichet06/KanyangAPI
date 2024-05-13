@@ -57,8 +57,6 @@ class sharepercentModel {
             const isLeap = await this.isLeapYear(Data.year);
             const lastDay = isLeap ? 29 : 28;
 
-
-
             const currentDate = new Date().getFullYear();
             const yearStart = Data.year === '' ? `${currentDate}-02-${lastDay}` : `${Data.year}-02-${lastDay}`;
             const yearEnd = Data.year === '' ? `${currentDate + 1}-03-01` : `${parseInt(Data.year) + 1}-03-01`;
