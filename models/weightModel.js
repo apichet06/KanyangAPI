@@ -84,8 +84,9 @@ class WeightModel {
 
 
             const [result] = await db.query(`
-            SELECT w_number,f.r_number,r_around,b.u_share_id,r_rubber_price,w_weigth,w_price,a.u_number,CONCAT(b.u_title,b.u_firstname,' ',b.u_lastname)as username,b.u_address,c.name_in_thai,d.name_in_thai,
-            d.name_in_thai,e.name_in_thai,zip_code,CONCAT(g.u_title,g.u_firstname,' ',g.u_lastname)as uadmin,w_datetime,r_rubber_date
+            SELECT w_number,f.r_number,r_around,b.u_share_id,r_rubber_price,w_weigth,w_price,a.u_number,CONCAT(b.u_title,b.u_firstname,' ',b.u_lastname)as username,
+            CONCAT(b.u_address,' ต.',e.name_in_thai,' อ.',d.name_in_thai,' จ.',c.name_in_thai,' ',zip_code) as Address,
+            CONCAT(g.u_title,g.u_firstname,' ',g.u_lastname)as uadmin,w_datetime,r_rubber_date
             FROM kanyangDB.weight_price a
             inner join kanyangDB.Users b
             on a.u_number = b.u_number

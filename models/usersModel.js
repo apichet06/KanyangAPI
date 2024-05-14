@@ -98,6 +98,8 @@ class Users {
         }
 
     }
+
+
     static async getById(u_number) {
         try {
             const [result] = await db.query(`

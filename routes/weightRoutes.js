@@ -9,5 +9,6 @@ routes.get('/users/:u_number', weightController.GetWeightUserById)
 routes.post('/', weightController.CreateWeightprice)
 routes.put('/:w_number', weightController.UpdateWeightprice)
 routes.delete('/:w_number', weightController.DeleteWeightprice)
+routes.post('/Export', weightController.ExportExcelWeightprice)
 
 module.exports = routes
