@@ -147,7 +147,6 @@ class WeightController {
             });
 
 
-
         } catch (error) {
             res.status(500).json({ status: Messages.error500, message: error.message })
         }
