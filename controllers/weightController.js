@@ -50,8 +50,6 @@ class WeightController {
         try {
             const { r_number, u_firstname } = req.body
             const Data = { r_number, u_firstname }
-
-
             const data = await WeightModel.getAll(Data)
             const sanitizedData = data.map(({ u_password, ...rest }) => rest);
             if (data)

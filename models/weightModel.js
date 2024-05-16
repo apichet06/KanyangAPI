@@ -100,8 +100,8 @@ class WeightModel {
             on f.r_number = a.r_number
             inner join kanyangDB.Users g
             on g.u_number = a.w_admin
-            Where a.r_number like ? AND b.u_firstname like ? 
-            order by a.w_number desc`, ['%' + body.r_number + '%', '%' + body.u_firstname + '%'])
+            Where a.r_number like ? AND (b.u_firstname like ? Or b.u_number like ?)
+            order by a.w_number desc`, ['%' + body.r_number + '%', '%' + body.u_firstname + '%', '%' + body.u_firstname + '%'])
             return result
         } catch (error) {
             throw error
@@ -123,7 +123,7 @@ class WeightModel {
     static async getUserById(u_number) {
 
         try {
-            const [result] = await db.query(`SELECT w_number,u_share_id,f.r_number,r_around,r_rubber_price,w_weigth,w_price,a.u_number,CONCAT(b.u_title,b.u_firstname,' ',b.u_lastname)as username,b.u_address,c.name_in_thai,d.name_in_thai,
+            const [result] = await db.query(`SELECT w_number,b.u_share_id,f.r_number,r_around,r_rubber_price,w_weigth,w_price,a.u_number,CONCAT(b.u_title,b.u_firstname,' ',b.u_lastname)as username,b.u_address,c.name_in_thai,d.name_in_thai,
                         d.name_in_thai,e.name_in_thai,zip_code,CONCAT(g.u_title,g.u_firstname,' ',g.u_lastname)as uadmin,w_datetime,r_rubber_date
                         FROM kanyangDB.weight_price a
                         inner join kanyangDB.Users b
