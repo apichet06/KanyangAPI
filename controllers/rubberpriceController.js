@@ -75,6 +75,19 @@ class rubberController {
         }
     }
 
+    static async RubberPriceChart(req, res) {
+        try {
+
+            // const { r_number } = req.params;
+            const data = await rubberMudel.getChart();
+            if (data) {
+                res.status(200).json({ status: Messages.ok, data: data });
+            }
+        } catch (error) {
+            res.status(500).json({ status: Messages.error500, message: error.message });
+        }
+    }
+
 }
 
 
