@@ -119,24 +119,22 @@ class rubber_priceModel {
     static async getChart(data) {
         try {
             const [result] = await db.query(`
-                        SELECT a.id, a.m_number, a.m_name, bx.r_rubber_date, bx.r_rubber_price
-                        FROM kanyangDB.months a
-                        LEFT JOIN (
-                            SELECT r_rubber_date, r_rubber_price 
-                            FROM kanyangDB.rubber_price 
-                            WHERE YEAR(r_rubber_date) = 2024
-                        ) AS bx
-                        ON MONTH(bx.r_rubber_date) = a.m_number
-                        
-                    `);
+            SELECT a.id, a.m_number, a.m_name, bx.r_rubber_date, bx.r_rubber_price,bx.r_around
+            FROM kanyangDB.months a
+            LEFT JOIN (
+                SELECT r_rubber_date,r_rubber_price,r_around 
+                FROM kanyangDB.rubber_price 
+                WHERE YEAR(r_rubber_date) = 2024
+            ) AS bx
+            ON MONTH(bx.r_rubber_date) = a.m_number`);
 
             if (result) {
-                const finalResult = Object.values(result.reduce((acc, { id, m_number, m_name, r_rubber_date, r_rubber_price }) => {
+                const finalResult = Object.values(result.reduce((acc, { r_around, m_number, m_name, r_rubber_date, r_rubber_price }) => {
                     if (!acc[m_number]) {
                         acc[m_number] = { m_number, m_name, data: [] };
                     }
                     if (r_rubber_date && r_rubber_price) {
-                        acc[m_number].data.push({ r_rubber_date, r_rubber_price });
+                        acc[m_number].data.push({ r_around, r_rubber_date, r_rubber_price });
                     }
                     return acc;
                 }, {})).sort((a, b) => parseInt(a.m_number) - parseInt(b.m_number));
