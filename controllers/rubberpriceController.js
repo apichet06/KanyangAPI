@@ -77,9 +77,9 @@ class rubberController {
 
     static async RubberPriceChart(req, res) {
         try {
-
+            const Year = new Date().getFullYear();
             // const { r_number } = req.params;
-            const data = await rubberMudel.getChart();
+            const data = await rubberMudel.getChart({ Year });
             if (data) {
                 res.status(200).json({ status: Messages.ok, data: data });
             }
