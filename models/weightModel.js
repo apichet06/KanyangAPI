@@ -82,7 +82,6 @@ class WeightModel {
     static async getAll(body) {
         try {
 
-
             const [result] = await db.query(`
             SELECT w_number,f.r_number,r_around,b.u_share_id,r_rubber_price,w_weigth,w_price,a.u_number,CONCAT(b.u_title,b.u_firstname,' ',b.u_lastname)as username,
             CONCAT(b.u_address,' ต.',e.name_in_thai,' อ.',d.name_in_thai,' จ.',c.name_in_thai,' ',zip_code) as Address,
@@ -150,6 +149,26 @@ class WeightModel {
         }
     }
 
+    static async Update_shareYear(Year) {
+        try {
+            console.log(Year);
+            const [result] = await db.query(`select u_number,u_share from kanyangDB.users where u_share > 0 order by u_number asc`)
+            return result
+
+
+
+
+
+        } catch (error) {
+            throw error
+        }
+    }
+
+
 }
+
+
+
+
 
 module.exports = WeightModel

@@ -3,12 +3,14 @@ const express = require('express')
 const routes = express.Router()
 
 
-routes.post('/weight', weightController.GetWeightpriceAll)
-routes.get('/:w_number', weightController.GetWeightpriceById)
-routes.get('/users/:u_number', weightController.GetWeightUserById)
-routes.post('/', weightController.CreateWeightprice)
-routes.put('/:w_number', weightController.UpdateWeightprice)
-routes.delete('/:w_number', weightController.DeleteWeightprice)
-routes.post('/Export', weightController.ExportExcelWeightprice)
+routes.post('/weight', weightController.GetWeightpriceAll);
+routes.post('/Export', weightController.ExportExcelWeightprice);
+routes.get('/UdateshareYear', weightController.CreateshareYear);
+routes.get('/users/:u_number', weightController.GetWeightUserById);
+routes.get('/:w_number', weightController.GetWeightpriceById);
+routes.post('/', weightController.CreateWeightprice);
+routes.put('/:w_number', weightController.UpdateWeightprice);
+routes.delete('/:w_number', weightController.DeleteWeightprice);
+
 
 module.exports = routes
