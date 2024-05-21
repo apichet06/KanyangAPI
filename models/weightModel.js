@@ -156,13 +156,12 @@ class WeightModel {
 
             await Promise.all(result.map(async (item) => {
 
-                const sql = `
-                    INSERT INTO share (u_number, u_share, year)
-                    VALUES (?, ?, ?)
-                    ON DUPLICATE KEY UPDATE
-                    u_share = VALUES(u_share), year = VALUES(year)
-                `;
-                await db.query(sql, [item.u_number, item.u_share, Year.Year]);
+                await db.query(`
+                INSERT INTO share (u_number, u_share, year)
+                VALUES (?, ?, ?)
+                ON DUPLICATE KEY UPDATE
+                u_share = VALUES(u_share), year = VALUES(year)
+                `, [item.u_number, item.u_share, Year.Year]);
             }));
 
             return 1;
