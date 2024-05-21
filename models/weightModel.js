@@ -151,25 +151,25 @@ class WeightModel {
 
     static async Update_shareYear(Year) {
         try {
-
-            const [result] = await db.query(`select u_number,u_share from kanyangDB.users where u_share > 0 order by u_number asc`)
+            const [result] = await db.query(`SELECT u_number, u_share FROM kanyangDB.users WHERE u_share > 0 ORDER BY u_number ASC`);
 
             await Promise.all(result.map(async (item) => {
+                const [existing] = await db.query(`SELECT 1 FROM share WHERE u_number = ? AND year = ?`, [item.u_number, Year.Year]);
 
-                await db.query(`
-                INSERT INTO share (u_number, u_share, year)
-                VALUES (?, ?, ?)
-                ON DUPLICATE KEY UPDATE
-                u_share = VALUES(u_share), year = VALUES(year)
-                `, [item.u_number, item.u_share, Year.Year]);
+                if (existing.length) {
+                    await db.query(`UPDATE share SET u_share = ? WHERE u_number = ? AND year = ?`, [item.u_share, item.u_number, Year.Year]);
+                } else {
+                    await db.query(`INSERT INTO share (u_number, u_share, year) VALUES (?, ?, ?)`, [item.u_number, item.u_share, Year.Year]);
+                }
             }));
 
             return 1;
-
         } catch (error) {
-            throw error
+            throw error;
         }
     }
+
+
 
 
 }

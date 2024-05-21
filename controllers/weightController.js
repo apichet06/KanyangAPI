@@ -152,7 +152,7 @@ class WeightController {
 
     static async CreateshareYear(req, res) {
         try {
-            const Year = new Date().getFullYear() - 1;
+            const Year = new Date().getFullYear();
 
             const data = await WeightModel.Update_shareYear({ Year });
 
