@@ -121,9 +121,9 @@ class sharepercentModel {
             INNER JOIN kanyangDB.districts f    ON f.id = a.districts_id
             INNER JOIN kanyangDB.subdistricts g ON g.id = a.subdistricts_id
             INNER JOIN kanyangDB.share h 		ON h.u_number = a.u_number
-            WHERE c.r_rubber_date >= ? AND c.r_rubber_date <= ? AND h.u_share > 0 AND h.year = ? AND (a.u_firstname like ? or a.u_number like ?)   
+            WHERE c.r_rubber_date >= ? AND c.r_rubber_date <= ? AND h.u_share > 0 AND h.year like ? AND (a.u_firstname like ? or a.u_number like ?)   
             GROUP BY a.u_number
-            order by a.u_number asc`, [yearStart, yearEnd, year, '%' + Data.u_username + '%', '%' + Data.u_username + '%'])
+            order by a.u_number asc`, [yearStart, yearEnd, '%' + year + '%', '%' + Data.u_username + '%', '%' + Data.u_username + '%'])
 
             if (result)
                 return result

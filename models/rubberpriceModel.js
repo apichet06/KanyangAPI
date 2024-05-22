@@ -119,7 +119,6 @@ class rubber_priceModel {
     static async getChart(data) {
         try {
 
-            console.log(data);
             const [result] = await db.query(`
             SELECT a.id, a.m_number, a.m_name, bx.r_rubber_date, bx.r_rubber_price,bx.r_around
             FROM kanyangDB.months a
