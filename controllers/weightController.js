@@ -150,18 +150,7 @@ class WeightController {
         }
     }
 
-    static async CreateshareYear(req, res) {
-        try {
-            const Year = new Date().getFullYear();
 
-            const data = await WeightModel.Update_shareYear({ Year });
-
-            if (data)
-                res.status(200).json({ status: Messages.ok, data: data })
-        } catch (error) {
-            res.status(500).json({ status: Messages.error500, message: error.message })
-        }
-    }
 
 
 }
