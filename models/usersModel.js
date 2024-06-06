@@ -83,8 +83,9 @@ class Users {
     static async getAll() {
         try {
             const [result] = await db.query(`
-            SELECT *,CONCAT(a.u_title,a.u_firstname,' ',a.u_lastname)as username,a.u_address,
-            CONCAT(a.u_address ,' ต.',d.name_in_thai,' อ.',c.name_in_thai,' จ.',b.name_in_thai, ' ', d.zip_code) AS u_addressfull 
+            SELECT  a.id,a.u_number,a.u_title,a.u_firstname,a.u_lastname,a.u_address ,d.name_in_thai,c.name_in_thai,b.name_in_thai,
+            d.zip_code,CONCAT(a.u_title,a.u_firstname,' ',a.u_lastname)as username,a.u_address,a.u_status,a.u_share,a.u_share_id,
+            d.id as id_subdis,c.id as id_dis,b.id as id_prov,CONCAT(a.u_address ,' ต.',d.name_in_thai,' อ.',c.name_in_thai,' จ.',b.name_in_thai, ' ', d.zip_code) AS u_addressfull 
             FROM kanyangDB.Users a
             inner join kanyangDB.provinces b
             on a.provinces_id = b.id 
