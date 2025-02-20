@@ -113,7 +113,7 @@ class sharepercentModel {
                 ROUND(COALESCE(Max(d.s_huatun),0),2) AS percent_yang,
                 ROUND(COALESCE(Sum((d.s_huatun/1000)*b.w_weigth),0),2) AS sumhuatun, 
                 ROUND(COALESCE(MAX(h.u_share * d.s_percent / 100)+SUM((d.s_huatun / 1000) * b.w_weigth), 0), 2) AS sumPrice
-            FROM nongpa_db.Users a
+            FROM nongpa_db.users a
             LEFT JOIN nongpa_db.weight_price b  ON a.u_number = b.u_number
             LEFT JOIN nongpa_db.rubber_price c  ON b.r_number = c.r_number
             LEFT JOIN nongpa_db.share_percent d ON year(c.r_rubber_date) = d.s_year
@@ -148,7 +148,7 @@ module.exports = sharepercentModel
 //   x.u_share,x.percent,ROUND(COALESCE((x.u_share*x.percent/100),0),2) as Sumpercentshare,
 //   x.w_weigth,x.s_huatun,ROUND(COALESCE((x.w_weigth/1000)*x.s_huatun,0),2) as sumhuatun,
 //   ROUND(COALESCE((x.u_share*x.percent/100) + (x.w_weigth/1000)*x.s_huatun,0),2) AS sumPrice
-// FROM nongpa_db.Users a
+// FROM nongpa_db.users a
 // INNER JOIN (SELECT b.u_number, sum(b.w_weigth) as w_weigth,max(c.year) as x_year,max(s_percent) as percent ,max(s_huatun) as s_huatun,max(c.u_share) as u_share,max(a.r_rubber_date) as r_rubber_date
 //     FROM nongpa_db.rubber_price a
 // 	INNER JOIN nongpa_db.weight_price b
