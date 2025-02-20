@@ -48,7 +48,7 @@ class sharepercentModel {
 
     static async Update_shareYear(Year) {
         try {
-            const [result] = await db.query(`SELECT u_number, u_share FROM kanyangDB.users WHERE u_share > 0 ORDER BY u_number ASC`);
+            const [result] = await db.query(`SELECT u_number, u_share FROM nongpa_db.users WHERE u_share > 0 ORDER BY u_number ASC`);
 
             await Promise.all(result.map(async (item) => {
                 const [existing] = await db.query(`SELECT 1 FROM share WHERE u_number = ? AND year = ?`, [item.u_number, Year.Year]);
@@ -113,14 +113,14 @@ class sharepercentModel {
                 ROUND(COALESCE(Max(d.s_huatun),0),2) AS percent_yang,
                 ROUND(COALESCE(Sum((d.s_huatun/1000)*b.w_weigth),0),2) AS sumhuatun, 
                 ROUND(COALESCE(MAX(h.u_share * d.s_percent / 100)+SUM((d.s_huatun / 1000) * b.w_weigth), 0), 2) AS sumPrice
-            FROM kanyangDB.Users a
-            LEFT JOIN kanyangDB.weight_price b  ON a.u_number = b.u_number
-            LEFT JOIN kanyangDB.rubber_price c  ON b.r_number = c.r_number
-            LEFT JOIN kanyangDB.share_percent d ON year(c.r_rubber_date) = d.s_year
-            INNER JOIN kanyangDB.provinces e 	ON e.id = a.provinces_id
-            INNER JOIN kanyangDB.districts f    ON f.id = a.districts_id
-            INNER JOIN kanyangDB.subdistricts g ON g.id = a.subdistricts_id
-            INNER JOIN kanyangDB.share h 		ON h.u_number = a.u_number
+            FROM nongpa_db.Users a
+            LEFT JOIN nongpa_db.weight_price b  ON a.u_number = b.u_number
+            LEFT JOIN nongpa_db.rubber_price c  ON b.r_number = c.r_number
+            LEFT JOIN nongpa_db.share_percent d ON year(c.r_rubber_date) = d.s_year
+            INNER JOIN nongpa_db.provinces e 	ON e.id = a.provinces_id
+            INNER JOIN nongpa_db.districts f    ON f.id = a.districts_id
+            INNER JOIN nongpa_db.subdistricts g ON g.id = a.subdistricts_id
+            INNER JOIN nongpa_db.share h 		ON h.u_number = a.u_number
             WHERE c.r_rubber_date >= ? AND c.r_rubber_date <= ? AND h.u_share > 0 AND h.year like ? AND (a.u_firstname like ? or a.u_number like ?)   
             GROUP BY a.u_number
             order by a.u_number asc`, [yearStart, yearEnd, '%' + year + '%', '%' + Data.u_username + '%', '%' + Data.u_username + '%'])
@@ -137,7 +137,7 @@ class sharepercentModel {
 
 module.exports = sharepercentModel
 
-// SELECT 
+// SELECT
 //   CASE
 //      WHEN CONCAT(YEAR(CURRENT_DATE()), '-', LPAD(MONTH(CURRENT_DATE()), 2, '0')) >= CONCAT(YEAR(CURRENT_DATE()), '-02') THEN YEAR(x.r_rubber_date)
 //      ELSE YEAR(x.r_rubber_date) - 1
@@ -148,21 +148,21 @@ module.exports = sharepercentModel
 //   x.u_share,x.percent,ROUND(COALESCE((x.u_share*x.percent/100),0),2) as Sumpercentshare,
 //   x.w_weigth,x.s_huatun,ROUND(COALESCE((x.w_weigth/1000)*x.s_huatun,0),2) as sumhuatun,
 //   ROUND(COALESCE((x.u_share*x.percent/100) + (x.w_weigth/1000)*x.s_huatun,0),2) AS sumPrice
-// FROM kanyangDB.Users a
+// FROM nongpa_db.Users a
 // INNER JOIN (SELECT b.u_number, sum(b.w_weigth) as w_weigth,max(c.year) as x_year,max(s_percent) as percent ,max(s_huatun) as s_huatun,max(c.u_share) as u_share,max(a.r_rubber_date) as r_rubber_date
-//     FROM kanyangDB.rubber_price a
-// 	INNER JOIN kanyangDB.weight_price b
+//     FROM nongpa_db.rubber_price a
+// 	INNER JOIN nongpa_db.weight_price b
 // 	ON a.r_number = b.r_number
-//     INNER JOIN kanyangDB.share c
+//     INNER JOIN nongpa_db.share c
 //     ON c.u_number = b.u_number
-//     INNER JOIN kanyangDB.share_percent d 
+//     INNER JOIN nongpa_db.share_percent d
 //     ON d.s_year =c.year
 // 	Where a.r_rubber_date >= '2023-03-01' AND a.r_rubber_date <= '2024-02-28'  and c.year = 2023 -- and b.u_number = 'U10000054'
 // 	group by b.u_number )as x
-// ON x.u_number = a.u_number 
-// INNER JOIN kanyangDB.provinces e 	ON e.id = a.provinces_id
-// INNER JOIN kanyangDB.districts f    ON f.id = a.districts_id
-// INNER JOIN kanyangDB.subdistricts g ON g.id = a.subdistricts_id
+// ON x.u_number = a.u_number
+// INNER JOIN nongpa_db.provinces e 	ON e.id = a.provinces_id
+// INNER JOIN nongpa_db.districts f    ON f.id = a.districts_id
+// INNER JOIN nongpa_db.subdistricts g ON g.id = a.subdistricts_id
 
 
 

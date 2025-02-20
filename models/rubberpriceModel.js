@@ -91,8 +91,8 @@ class rubber_priceModel {
 
         try {
             const [result] = await db.query(`SELECT CONCAT(b.u_title,b.u_firstname,' ',b.u_lastname)as username,a.* 
-              FROM kanyangDB.rubber_price a 
-              inner join kanyangDB.users b on a.u_number = b.u_number order by r_rubber_date desc`);
+              FROM nongpa_db.rubber_price a 
+              inner join nongpa_db.users b on a.u_number = b.u_number order by r_rubber_date desc`);
             if (result) {
                 return result;
             } else {
@@ -121,10 +121,10 @@ class rubber_priceModel {
 
             const [result] = await db.query(`
             SELECT a.id, a.m_number, a.m_name, bx.r_rubber_date, bx.r_rubber_price,bx.r_around
-            FROM kanyangDB.months a
+            FROM nongpa_db.months a
             LEFT JOIN (
                 SELECT r_rubber_date,r_rubber_price,r_around 
-                FROM kanyangDB.rubber_price 
+                FROM nongpa_db.rubber_price 
                 WHERE YEAR(r_rubber_date) = ?
             ) AS bx
             ON MONTH(bx.r_rubber_date) = a.m_number`, [data.Year]);
