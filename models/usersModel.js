@@ -104,7 +104,7 @@ class Users {
     static async getById(u_number) {
         try {
             const [result] = await db.query(`
-            SELECT * FROM Users a
+            SELECT * FROM users a
             inner join provinces b
             on a.provinces_id = b.id 
             inner join districts c
