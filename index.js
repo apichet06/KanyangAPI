@@ -25,7 +25,7 @@ app.use('/api/weightprice/', weightprice)
 app.use('/api/users/', users)
 app.use('/api/sharepercent/', sharepercent)
 
-app.get('/', function (req, res) {
+app.get('/wabapi/', function (req, res) {
     res.send("Welcome to the API , Ganyang system");
 })
 
