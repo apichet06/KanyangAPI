@@ -79,33 +79,56 @@ class WeightModel {
         }
     }
 
+
     static async getAll(body) {
         try {
 
+
+            const [[countResult]] = await db.query(`
+                SELECT COUNT(*) AS total FROM nongpa_db.weight_price a
+                INNER JOIN nongpa_db.users b ON a.u_number = b.u_number
+                WHERE a.r_number = ? AND (b.u_firstname LIKE ? OR b.u_number LIKE ?)`,
+                [
+                    body.r_number,
+                    '%' + body.u_firstname + '%',
+                    '%' + body.u_firstname + '%'
+                ]
+            );
+
+            const totalRecords = countResult.total;
+            const totalPages = Math.ceil(totalRecords / body.limit);
+
             const [result] = await db.query(`
-            SELECT w_number,f.r_number,r_around,b.u_share_id,r_rubber_price,w_weigth,w_price,a.u_number,CONCAT(b.u_title,b.u_firstname,' ',b.u_lastname)as username,
-            CONCAT(b.u_address,' ต.',e.name_in_thai,' อ.',d.name_in_thai,' จ.',c.name_in_thai,' ',zip_code) as Address,
-            CONCAT(g.u_title,g.u_firstname,' ',g.u_lastname)as uadmin,w_datetime,r_rubber_date
-            FROM nongpa_db.weight_price a
-            inner join nongpa_db.users b
-            on a.u_number = b.u_number
-            inner join nongpa_db.provinces c 
-            on c.id = b.provinces_id
-            inner join nongpa_db.districts d 
-            on d.id = b.districts_id
-            inner join nongpa_db.subdistricts e 
-            on e.id = b.subdistricts_id
-            inner join nongpa_db.rubber_price f 
-            on f.r_number = a.r_number
-            inner join nongpa_db.users g
-            on g.u_number = a.w_admin
-            Where a.r_number like ? AND (b.u_firstname like ? Or b.u_number like ?)
-            order by a.w_number desc`, ['%' + body.r_number + '%', '%' + body.u_firstname + '%', '%' + body.u_firstname + '%'])
-            return result
+                SELECT w_number, f.r_number, r_around, b.u_share_id, r_rubber_price, w_weigth, w_price, 
+                       a.u_number, CONCAT(b.u_title, b.u_firstname, ' ', b.u_lastname) AS username,
+                       CONCAT(b.u_address, ' ต.', e.name_in_thai, ' อ.', d.name_in_thai, ' จ.', c.name_in_thai, ' ', zip_code) AS Address,
+                       CONCAT(g.u_title, g.u_firstname, ' ', g.u_lastname) AS uadmin, w_datetime, r_rubber_date
+                FROM nongpa_db.weight_price a
+                INNER JOIN nongpa_db.users b ON a.u_number = b.u_number
+                INNER JOIN nongpa_db.provinces c ON c.id = b.provinces_id
+                INNER JOIN nongpa_db.districts d ON d.id = b.districts_id
+                INNER JOIN nongpa_db.subdistricts e ON e.id = b.subdistricts_id
+                INNER JOIN nongpa_db.rubber_price f ON f.r_number = a.r_number
+                INNER JOIN nongpa_db.users g ON g.u_number = a.w_admin
+                WHERE a.r_number LIKE ? AND (b.u_firstname LIKE ? OR b.u_number LIKE ?)
+                ORDER BY a.w_number DESC
+                LIMIT ? OFFSET ?`,
+                [
+                    body.r_number,
+                    '%' + body.u_firstname + '%',
+                    '%' + body.u_firstname + '%',
+                    Number(body.limit),
+                    Number(body.offset)
+                ]
+            );
+
+            return { result, totalRecords, totalPages };
         } catch (error) {
-            throw error
+            throw error;
         }
     }
+
+
 
     static async getById(w_number) {
         try {

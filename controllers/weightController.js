@@ -48,16 +48,27 @@ class WeightController {
     }
     static async GetWeightpriceAll(req, res) {
         try {
-            const { r_number, u_firstname } = req.body
-            const Data = { r_number, u_firstname }
-            const data = await WeightModel.getAll(Data)
-            const sanitizedData = data.map(({ u_password, ...rest }) => rest);
-            if (data)
-                res.status(200).json({ status: Messages.ok, data: sanitizedData })
+            const { r_number, u_firstname, page = 1, limit = 5 } = req.body;
+            const offset = (page - 1) * limit;
+
+            const Data = { r_number, u_firstname, limit, offset };
+            const { result, totalRecords, totalPages } = await WeightModel.getAll(Data);
+
+            const sanitizedData = result.map(({ u_password, ...rest }) => rest);
+
+            res.status(200).json({
+                status: Messages.ok,
+                data: sanitizedData,
+                page,
+                limit,
+                totalRecords,
+                totalPages
+            });
         } catch (error) {
-            res.status(500).json({ status: Messages.error500, message: error.message })
+            res.status(500).json({ status: Messages.error500, message: error.message });
         }
     }
+
 
     static async GetWeightpriceById(req, res) {
         try {
