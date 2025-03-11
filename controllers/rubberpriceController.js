@@ -77,8 +77,8 @@ class rubberController {
 
     static async RubberPriceChart(req, res) {
         try {
-            const Year = new Date().getFullYear();
-            // const { r_number } = req.params;
+            // const Year = new Date().getFullYear();
+            const { Year } = req.params;
             const data = await rubberMudel.getChart({ Year });
             if (data) {
                 res.status(200).json({ status: Messages.ok, data: data });
@@ -88,6 +88,16 @@ class rubberController {
         }
     }
 
+    static async ChartYear(req, res) {
+        try {
+            const data = await rubberMudel.getChartYear();
+            if (data) {
+                res.status(200).json({ status: Messages.ok, data: data });
+            }
+        } catch (error) {
+            res.status(500).json({ status: Messages.error500, message: error.message });
+        }
+    }
 }
 
 

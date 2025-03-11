@@ -146,7 +146,19 @@ class rubber_priceModel {
             throw error
         }
     }
+    static async getChartYear() {
 
+        try {
+            const [result] = await db.query(`SELECT YEAR(r_rubber_date) as Year FROM rubber_price GROUP BY YEAR(r_rubber_date)`);
+            if (result)
+                return result;
+            else
+                throw new Error(Messages.notFound)
+
+        } catch (error) {
+            throw error
+        }
+    }
 
 
 

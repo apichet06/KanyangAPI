@@ -99,7 +99,7 @@ class WeightController {
             const Data = { r_number, u_firstname }
 
 
-            const data = await WeightModel.getAll(Data)
+            const data = await WeightModel.getAllExport(Data)
 
             const workbook = new excel.Workbook();
             const worksheet = workbook.addWorksheet("ShareData");

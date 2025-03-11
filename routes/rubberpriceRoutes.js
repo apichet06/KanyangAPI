@@ -10,6 +10,6 @@ routes.put('/:r_number', rubberController.updateRubberPrice)
 routes.delete('/:r_number', rubberController.DeleteRubberPrice)
 routes.get('/', rubberController.ShowRubberPriceAll)
 routes.get('/:r_number', rubberController.ShowRubberPriceById)
-routes.get('/data/chart/', rubberController.RubberPriceChart)
-
+routes.get('/data/chart/:Year', rubberController.RubberPriceChart)
+routes.get('/data/chartYear', rubberController.ChartYear);
 module.exports = routes 
