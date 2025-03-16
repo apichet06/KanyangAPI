@@ -112,7 +112,7 @@ class sharepercentModel {
                 ROUND(COALESCE(Sum(b.w_weigth),0),2) AS Sumweight,
                 ROUND(COALESCE(Max(d.s_huatun),0),2) AS percent_yang,
                 ROUND(COALESCE(Max(d.s_huatun) * Sum(b.w_weigth) / 1000, 0), 2) AS sumhuatun,
-                ROUND(COALESCE(MAX(h.u_share * d.s_percent / 100)+SUM((d.s_huatun / 1000) * b.w_weigth), 0), 2) AS sumPrice
+                ROUND(COALESCE(MAX(h.u_share * d.s_percent / 100)+ Max(d.s_huatun) * Sum(b.w_weigth) / 1000, 0), 2) AS sumPrice
             FROM nongpa_db.users a
             LEFT JOIN nongpa_db.weight_price b  ON a.u_number = b.u_number
             LEFT JOIN nongpa_db.rubber_price c  ON b.r_number = c.r_number
