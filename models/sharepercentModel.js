@@ -94,7 +94,7 @@ class sharepercentModel {
                 ? currentYear - 1 : currentYear) : parseInt(Data.year);
 
 
-
+            // ROUND(COALESCE(Sum((d.s_huatun/1000)*b.w_weigth),0),2) AS sumhuatun, 
             const [result] = await db.query(
                 `SELECT  
                 MAX(CASE
@@ -111,7 +111,7 @@ class sharepercentModel {
                 ROUND(COALESCE(Max(h.u_share*d.s_percent/100),0),2) AS Sumpercentshare,
                 ROUND(COALESCE(Sum(b.w_weigth),0),2) AS Sumweight,
                 ROUND(COALESCE(Max(d.s_huatun),0),2) AS percent_yang,
-                ROUND(COALESCE(Sum((d.s_huatun/1000)*b.w_weigth),0),2) AS sumhuatun, 
+                ROUND(COALESCE(Max(d.s_huatun) * Sum(b.w_weigth) / 1000, 0), 2) AS sumhuatun,
                 ROUND(COALESCE(MAX(h.u_share * d.s_percent / 100)+SUM((d.s_huatun / 1000) * b.w_weigth), 0), 2) AS sumPrice
             FROM nongpa_db.users a
             LEFT JOIN nongpa_db.weight_price b  ON a.u_number = b.u_number
@@ -124,7 +124,7 @@ class sharepercentModel {
             WHERE c.r_rubber_date >= ? AND c.r_rubber_date <= ? AND h.u_share > 0 AND h.year like ? AND (a.u_firstname like ? or a.u_number like ?)   
             GROUP BY a.u_number
             order by a.u_number asc`, [yearStart, yearEnd, '%' + year + '%', '%' + Data.u_username + '%', '%' + Data.u_username + '%'])
-
+            // (50/1000)*น้ำหนัก 
             if (result)
                 return result
             else
