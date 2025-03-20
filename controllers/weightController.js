@@ -99,6 +99,8 @@ class WeightController {
             const Data = { r_number, u_firstname }
 
 
+            const getCurrentYearMonth = () => `${new Date().getFullYear()}/${(new Date().getMonth() + 1).toString().padStart(2, '0')}`;
+
             const data = await WeightModel.getAllExport(Data)
 
             const workbook = new excel.Workbook();
@@ -107,7 +109,7 @@ class WeightController {
             //EXCEL:HREADER
             worksheet.mergeCells('A1:H1');
             const titleCell = worksheet.getCell('A1');
-            titleCell.value = 'รายการขายยางพาราประจำเดือน 2024/05'
+            titleCell.value = 'รายการขายยางพาราประจำเดือน ' + getCurrentYearMonth()
             titleCell.font = { name: "Angsana New", bold: true, size: 20 };
             titleCell.alignment = { horizontal: 'center' };
 
