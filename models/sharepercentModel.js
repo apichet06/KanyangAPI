@@ -97,18 +97,19 @@ class sharepercentModel {
             // ROUND(COALESCE(Sum((d.s_huatun/1000)*b.w_weigth),0),2) AS sumhuatun, 
             const [result] = await db.query(
                 `SELECT  
-                MAX(CASE
-                WHEN CONCAT(YEAR(CURRENT_DATE()), '-', LPAD(MONTH(CURRENT_DATE()), 2, '0')) >= CONCAT(YEAR(CURRENT_DATE()), '-02') THEN YEAR(c.r_rubber_date)
-                ELSE YEAR(c.r_rubber_date) - 1
-                END) AS r_rubber_year,
+                -- MAX(CASE
+                -- WHEN CONCAT(YEAR(CURRENT_DATE()), '-', LPAD(MONTH(CURRENT_DATE()), 2, '0')) >= CONCAT(YEAR(CURRENT_DATE()), '-02') THEN YEAR(c.r_rubber_date)
+                -- ELSE YEAR(c.r_rubber_date) - 1
+                -- END) AS r_rubber_year,
+                h.year AS r_rubber_year,
                 Max(u_share_id) AS u_share_id,a.u_number, 
                 MAX(a.u_title) AS u_title,
                 MAX(a.u_firstname) AS u_firstname,
                 MAX(a.u_lastname) AS u_lastname,
                 MAX(CONCAT(a.u_address ,' ต.',g.name_in_thai,' อ.',f.name_in_thai,' จ.',e.name_in_thai, ' ', g.zip_code)) AS u_address,
                 MAX(h.u_share) AS u_share, 
-                ROUND(COALESCE(Max(d.s_percent),0),2) AS percent,
-                ROUND(COALESCE(Max(h.u_share*d.s_percent/100),0),2) AS Sumpercentshare,
+                ROUND(COALESCE((d.s_percent),0),2) AS percent,
+                ROUND(COALESCE((h.u_share*d.s_percent/100),0),2) AS Sumpercentshare,
                 ROUND(COALESCE(Sum(b.w_weigth),0),2) AS Sumweight,
                 ROUND(COALESCE(Max(d.s_huatun),0),2) AS percent_yang,
                 ROUND(COALESCE(Max(d.s_huatun) * Sum(b.w_weigth) / 1000, 0), 2) AS sumhuatun,
@@ -116,7 +117,7 @@ class sharepercentModel {
             FROM nongpa_db.users a
             LEFT JOIN nongpa_db.weight_price b  ON a.u_number = b.u_number
             LEFT JOIN nongpa_db.rubber_price c  ON b.r_number = c.r_number
-            LEFT JOIN nongpa_db.share_percent d ON year(c.r_rubber_date) = d.s_year
+            INNER JOIN nongpa_db.share_percent d ON year(c.r_rubber_date) = d.s_year
             INNER JOIN nongpa_db.provinces e 	ON e.id = a.provinces_id
             INNER JOIN nongpa_db.districts f    ON f.id = a.districts_id
             INNER JOIN nongpa_db.subdistricts g ON g.id = a.subdistricts_id
