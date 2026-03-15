@@ -77,55 +77,101 @@ class sharepercentModel {
     static async PostShare(Data) {
         try {
 
-            const isLeap = await this.isLeapYear(Data.year);
+            const currentDate = new Date();
+            const currentYear = currentDate.getFullYear();
+            const currentMonth = currentDate.getMonth() + 1;
+
+            const year = Data.year === ''
+                ? (currentMonth < 3 ? currentYear - 1 : currentYear)
+                : parseInt(Data.year);
+
+            const nextYear = year + 1;
+
+            const isLeap = (nextYear % 4 === 0 && nextYear % 100 !== 0) || (nextYear % 400 === 0);
             const lastDay = isLeap ? 29 : 28;
 
-            const currentYear = new Date().getFullYear();
-            const yearStart = Data.year === '' ? `${currentYear}-02-${lastDay}` : `${Data.year}-02-${lastDay}`;
-            const yearEnd = Data.year === '' ? `${currentYear + 1}-03-01` : `${parseInt(Data.year) + 1}-03-01`;
+            const yearStart = `${year}-03-01`;
+            const yearEnd = `${nextYear}-02-${lastDay}`;
+
+            // const currentMonth = new Date().getMonth() + 1; // January is 0
+            // const currentDay = new Date().getDate();
 
 
+            // const year = Data.year === '' ? (currentMonth < 2 || (currentMonth === 2 && currentDay < lastDay)
+            //     ? currentYear - 1 : currentYear) : parseInt(Data.year);
 
-            const currentMonth = new Date().getMonth() + 1; // January is 0
-            const currentDay = new Date().getDate();
-
-
-            const year = Data.year === '' ? (currentMonth < 2 || (currentMonth === 2 && currentDay < lastDay)
-                ? currentYear - 1 : currentYear) : parseInt(Data.year);
-
+            const [result] = await db.query(
+                `SELECT h.year AS r_rubber_year,
+                    a.u_number, 
+                    MAX(a.u_title) AS u_title,
+                    MAX(a.u_firstname) AS u_firstname,
+                    MAX(a.u_lastname) AS u_lastname,
+                    MAX(CONCAT(a.u_address ,' ต.',g.name_in_thai,' อ.',f.name_in_thai,' จ.',e.name_in_thai,' ',g.zip_code)) AS u_address,
+                    MAX(h.u_share) AS u_share,
+                    ROUND(COALESCE(d.s_percent,0),2) AS percent,
+                    ROUND(COALESCE(h.u_share * d.s_percent /100,0),2) AS Sumpercentshare,
+                    ROUND(COALESCE(SUM(b.w_weigth),0),2) AS Sumweight,
+                    ROUND(COALESCE(MAX(d.s_huatun),0),2) AS percent_yang,
+                    ROUND(COALESCE(MAX(d.s_huatun) * SUM(b.w_weigth) /1000,0),2) AS sumhuatun,
+                    ROUND(
+                        COALESCE(
+                            MAX(h.u_share * d.s_percent /100)
+                            + MAX(d.s_huatun) * SUM(b.w_weigth) /1000
+                        ,0)
+                    ,2) AS sumPrice
+                FROM users a
+                LEFT JOIN weight_price b ON a.u_number = b.u_number
+                LEFT JOIN rubber_price c ON b.r_number = c.r_number
+                INNER JOIN share h ON h.u_number = a.u_number
+                INNER JOIN share_percent d ON d.s_year = h.year
+                INNER JOIN provinces e ON e.id = a.provinces_id
+                INNER JOIN districts f ON f.id = a.districts_id
+                INNER JOIN subdistricts g ON g.id = a.subdistricts_id
+                WHERE c.r_rubber_date BETWEEN ? AND ?
+                AND h.u_share > 0
+                AND h.year = ?
+                AND (a.u_firstname LIKE ? OR a.u_number LIKE ?)
+                GROUP BY a.u_number
+                ORDER BY a.u_number ASC`,
+                [yearStart, yearEnd, year, '%' + Data.u_username + '%', '%' + Data.u_username + '%'])
 
             // ROUND(COALESCE(Sum((d.s_huatun/1000)*b.w_weigth),0),2) AS sumhuatun, 
-            const [result] = await db.query(
-                `SELECT  
-                -- MAX(CASE
-                -- WHEN CONCAT(YEAR(CURRENT_DATE()), '-', LPAD(MONTH(CURRENT_DATE()), 2, '0')) >= CONCAT(YEAR(CURRENT_DATE()), '-02') THEN YEAR(c.r_rubber_date)
-                -- ELSE YEAR(c.r_rubber_date) - 1
-                -- END) AS r_rubber_year,
-                h.year AS r_rubber_year,
-                Max(u_share_id) AS u_share_id,a.u_number, 
-                MAX(a.u_title) AS u_title,
-                MAX(a.u_firstname) AS u_firstname,
-                MAX(a.u_lastname) AS u_lastname,
-                MAX(CONCAT(a.u_address ,' ต.',g.name_in_thai,' อ.',f.name_in_thai,' จ.',e.name_in_thai, ' ', g.zip_code)) AS u_address,
-                MAX(h.u_share) AS u_share, 
-                ROUND(COALESCE((d.s_percent),0),2) AS percent,
-                ROUND(COALESCE((h.u_share*d.s_percent/100),0),2) AS Sumpercentshare,
-                ROUND(COALESCE(Sum(b.w_weigth),0),2) AS Sumweight,
-                ROUND(COALESCE(Max(d.s_huatun),0),2) AS percent_yang,
-                ROUND(COALESCE(Max(d.s_huatun) * Sum(b.w_weigth) / 1000, 0), 2) AS sumhuatun,
-                ROUND(COALESCE(MAX(h.u_share * d.s_percent / 100)+ Max(d.s_huatun) * Sum(b.w_weigth) / 1000, 0), 2) AS sumPrice
-            FROM nongpa_db.users a
-            LEFT JOIN nongpa_db.weight_price b  ON a.u_number = b.u_number
-            LEFT JOIN nongpa_db.rubber_price c  ON b.r_number = c.r_number
-            INNER JOIN nongpa_db.share_percent d ON year(c.r_rubber_date) = d.s_year
-            INNER JOIN nongpa_db.provinces e 	ON e.id = a.provinces_id
-            INNER JOIN nongpa_db.districts f    ON f.id = a.districts_id
-            INNER JOIN nongpa_db.subdistricts g ON g.id = a.subdistricts_id
-            INNER JOIN nongpa_db.share h 		ON h.u_number = a.u_number
-            WHERE c.r_rubber_date >= ? AND c.r_rubber_date <= ? AND h.u_share > 0 AND h.year like ? AND (a.u_firstname like ? or a.u_number like ?)   
-            GROUP BY a.u_number
-            order by a.u_number asc`, [yearStart, yearEnd, '%' + year + '%', '%' + Data.u_username + '%', '%' + Data.u_username + '%'])
+            // const [result] = await db.query(
+            //     `SELECT  
+            //     -- MAX(CASE
+            //     -- WHEN CONCAT(YEAR(CURRENT_DATE()), '-', LPAD(MONTH(CURRENT_DATE()), 2, '0')) >= CONCAT(YEAR(CURRENT_DATE()), '-02') THEN YEAR(c.r_rubber_date)
+            //     -- ELSE YEAR(c.r_rubber_date) - 1
+            //     -- END) AS r_rubber_year,
+            //     h.year AS r_rubber_year,
+            //     Max(u_share_id) AS u_share_id,a.u_number, 
+            //     MAX(a.u_title) AS u_title,
+            //     MAX(a.u_firstname) AS u_firstname,
+            //     MAX(a.u_lastname) AS u_lastname,
+            //     MAX(CONCAT(a.u_address ,' ต.',g.name_in_thai,' อ.',f.name_in_thai,' จ.',e.name_in_thai, ' ', g.zip_code)) AS u_address,
+            //     MAX(h.u_share) AS u_share, 
+            //     ROUND(COALESCE((d.s_percent),0),2) AS percent,
+            //     ROUND(COALESCE((h.u_share*d.s_percent/100),0),2) AS Sumpercentshare,
+            //     ROUND(COALESCE(Sum(b.w_weigth),0),2) AS Sumweight,
+            //     ROUND(COALESCE(Max(d.s_huatun),0),2) AS percent_yang,
+            //     ROUND(COALESCE(Max(d.s_huatun) * Sum(b.w_weigth) / 1000, 0), 2) AS sumhuatun,
+            //     ROUND(COALESCE(MAX(h.u_share * d.s_percent / 100)+ Max(d.s_huatun) * Sum(b.w_weigth) / 1000, 0), 2) AS sumPrice
+            // FROM nongpa_db.users a
+            // LEFT JOIN nongpa_db.weight_price b  ON a.u_number = b.u_number
+            // LEFT JOIN nongpa_db.rubber_price c  ON b.r_number = c.r_number
+            // INNER JOIN nongpa_db.share_percent d ON year(c.r_rubber_date) = d.s_year
+            // INNER JOIN nongpa_db.provinces e 	ON e.id = a.provinces_id
+            // INNER JOIN nongpa_db.districts f    ON f.id = a.districts_id
+            // INNER JOIN nongpa_db.subdistricts g ON g.id = a.subdistricts_id
+            // INNER JOIN nongpa_db.share h 		ON h.u_number = a.u_number
+            // WHERE c.r_rubber_date >= ? AND c.r_rubber_date <= ? AND h.u_share > 0 AND h.year like ? AND (a.u_firstname like ? or a.u_number like ?)   
+            // GROUP BY a.u_number
+            // order by a.u_number asc`, [yearStart, yearEnd, '%' + year + '%', '%' + Data.u_username + '%', '%' + Data.u_username + '%'])
             // (50/1000)*น้ำหนัก 
+
+
+
+
+
             if (result)
                 return result
             else

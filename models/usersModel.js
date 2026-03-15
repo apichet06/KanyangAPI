@@ -72,7 +72,7 @@ class Users {
 
     static async delete(u_number) {
         try {
-            const [result] = await db.query('DELETE FROM users WHERE u_number = ?', u_number)
+            const [result] = await db.query('DELETE FROM users WHERE u_number = ?', [u_number])
             return result.affectedRows
 
         } catch (error) {
