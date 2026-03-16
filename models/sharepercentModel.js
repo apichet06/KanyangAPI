@@ -102,7 +102,7 @@ class sharepercentModel {
 
             const [result] = await db.query(
                 `SELECT h.year AS r_rubber_year,
-                    a.u_number, 
+                    a.u_number,a.u_share_id ,
                     MAX(a.u_title) AS u_title,
                     MAX(a.u_firstname) AS u_firstname,
                     MAX(a.u_lastname) AS u_lastname,
